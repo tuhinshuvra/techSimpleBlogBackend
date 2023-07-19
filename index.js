@@ -11,7 +11,6 @@ app.use(express.json());
 
 const uri = "mongodb+srv://technetuser:Tm5DUcZ864QPe1xO@cluster0.7apvnd5.mongodb.net/?retryWrites=true&w=majority";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -57,6 +56,58 @@ async function run() {
       const result = await userCollection.updateOne(filter, updatedDoc, options);
       res.send(result);
     });
+
+
+    // api to save a new blog
+    app.post("/save_blogs", async (req, res) => {
+      const blog = req.body;
+      const result = await blogCollection.insertOne(blog);
+      res.send(result);
+    });
+
+    // api to show all blogs
+    app.get("/show_blogs", async (req, res) => {
+      const query = {};
+      const cursor = blogCollection.find(query);
+      const blogs = await cursor.toArray();
+      res.send(blogs);
+    });
+
+
+    // api to approve a blog
+    app.put("/makeApproveBlog/:id", async (req, res) => {
+      const blogId = req.params.id;
+      const filter = { _id: ObjectId(blogId) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          status: "approve",
+        },
+      };
+      const result = await blogCollection.updateOne(filter, updatedDoc, options);
+      res.send(result);
+    });
+
+
+    // show a blog by its id
+    app.get('/blogDetails/:id', async (req, res) => {
+      const id = req.params.id;
+
+      const result = await blogCollection.findOne({ _id: ObjectId(id) });
+      console.log(result);
+      res.send(result);
+    });
+
+    app.delete('/deleteBlog/:id', async (req, res) => {
+      const id = req.params.id;
+
+      const result = await blogCollection.deleteOne({ _id: ObjectId(id) });
+      console.log(result);
+      res.send(result);
+    });
+
+
+
 
 
 
