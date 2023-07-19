@@ -58,6 +58,15 @@ async function run() {
     });
 
 
+    // check a user is admin or not
+    app.get("/adminUser/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await userCollection.findOne(query);
+      res.send({ isAdmin: user?.role === "admin" });
+    });
+
+
     // api to save a new blog
     app.post("/save_blogs", async (req, res) => {
       const blog = req.body;
@@ -98,11 +107,26 @@ async function run() {
       res.send(result);
     });
 
+    // delete a blog
     app.delete('/deleteBlog/:id', async (req, res) => {
       const id = req.params.id;
 
       const result = await blogCollection.deleteOne({ _id: ObjectId(id) });
       console.log(result);
+      res.send(result);
+    });
+
+
+    // show a certain user blogs
+    app.get("/myPostedBlog", async (req, res) => {
+      let query = {};
+      if (req.query.email) {
+        query = {
+          bloggerEmail: req.query.email,
+        };
+      }
+      const cursor = blogCollection.find(query).sort({ postDate: -1 });
+      const result = await cursor.toArray();
       res.send(result);
     });
 
