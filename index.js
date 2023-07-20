@@ -27,6 +27,19 @@ async function run() {
 
     const productCollection = db.collection('product');
 
+    const verifyAdmin = async (req, res, next) => {
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const user = await userCollection.findOne(query);
+
+      if (user?.role !== 'admin') {
+        return res.status(403).send({ message: 'forbidden access' })
+      }
+      next();
+    }
+
+
+
     // api to save a new user
     app.post("/save_users", async (req, res) => {
       const user = req.body;
@@ -50,7 +63,7 @@ async function run() {
       const options = { upsert: true };
       const updatedDoc = {
         $set: {
-          role: "admin",
+          role: "admin"
         },
       };
       const result = await userCollection.updateOne(filter, updatedDoc, options);
