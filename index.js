@@ -26,19 +26,6 @@ async function run() {
     const blogCollection = db.collection('blogs');
 
 
-    // const verifyAdmin = async (req, res, next) => {
-    //   const decodedEmail = req.decoded.email;
-    //   const query = { email: decodedEmail };
-    //   const user = await userCollection.findOne(query);
-
-    //   if (user?.role !== 'admin') {
-    //     return res.status(403).send({ message: 'forbidden access' })
-    //   }
-    //   next();
-    // }
-
-
-
     // api to save a new user
     app.post("/save_users", async (req, res) => {
       const user = req.body;
@@ -115,7 +102,7 @@ async function run() {
       const id = req.params.id;
 
       const result = await blogCollection.findOne({ _id: ObjectId(id) });
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
 
@@ -124,7 +111,7 @@ async function run() {
       const id = req.params.id;
 
       const result = await blogCollection.deleteOne({ _id: ObjectId(id) });
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
 
@@ -141,50 +128,6 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // app.post('/comment/:id', async (req, res) => {
-    //   const productId = req.params.id;
-    //   const comment = req.body.comment;
-
-    //   console.log(productId);
-    //   console.log(comment);
-
-    //   const result = await productCollection.updateOne(
-    //     { _id: ObjectId(productId) },
-    //     { $push: { comments: comment } }
-    //   );
-
-    //   console.log(result);
-
-    //   if (result.modifiedCount !== 1) {
-    //     console.error('Product not found or comment not added');
-    //     res.json({ error: 'Product not found or comment not added' });
-    //     return;
-    //   }
-
-    //   console.log('Comment added successfully');
-    //   res.json({ message: 'Comment added successfully' });
-    // });
-
-
-
-
-
 
 
 
