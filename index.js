@@ -25,18 +25,17 @@ async function run() {
     const userCollection = db.collection('users');
     const blogCollection = db.collection('blogs');
 
-    const productCollection = db.collection('product');
 
-    const verifyAdmin = async (req, res, next) => {
-      const decodedEmail = req.decoded.email;
-      const query = { email: decodedEmail };
-      const user = await userCollection.findOne(query);
+    // const verifyAdmin = async (req, res, next) => {
+    //   const decodedEmail = req.decoded.email;
+    //   const query = { email: decodedEmail };
+    //   const user = await userCollection.findOne(query);
 
-      if (user?.role !== 'admin') {
-        return res.status(403).send({ message: 'forbidden access' })
-      }
-      next();
-    }
+    //   if (user?.role !== 'admin') {
+    //     return res.status(403).send({ message: 'forbidden access' })
+    //   }
+    //   next();
+    // }
 
 
 
@@ -152,60 +151,35 @@ async function run() {
 
 
 
-    app.get('/products', async (req, res) => {
-      const cursor = productCollection.find({});
-      const product = await cursor.toArray();
 
-      res.send({ status: true, data: product });
-    });
 
-    app.post('/product', async (req, res) => {
-      const product = req.body;
 
-      const result = await productCollection.insertOne(product);
 
-      res.send(result);
-    });
 
-    app.get('/product/:id', async (req, res) => {
-      const id = req.params.id;
 
-      const result = await productCollection.findOne({ _id: ObjectId(id) });
-      console.log(result);
-      res.send(result);
-    });
+    // app.post('/comment/:id', async (req, res) => {
+    //   const productId = req.params.id;
+    //   const comment = req.body.comment;
 
-    app.delete('/product/:id', async (req, res) => {
-      const id = req.params.id;
+    //   console.log(productId);
+    //   console.log(comment);
 
-      const result = await productCollection.deleteOne({ _id: ObjectId(id) });
-      console.log(result);
-      res.send(result);
-    });
+    //   const result = await productCollection.updateOne(
+    //     { _id: ObjectId(productId) },
+    //     { $push: { comments: comment } }
+    //   );
 
-    app.post('/comment/:id', async (req, res) => {
-      const productId = req.params.id;
-      const comment = req.body.comment;
+    //   console.log(result);
 
-      console.log(productId);
-      console.log(comment);
+    //   if (result.modifiedCount !== 1) {
+    //     console.error('Product not found or comment not added');
+    //     res.json({ error: 'Product not found or comment not added' });
+    //     return;
+    //   }
 
-      const result = await productCollection.updateOne(
-        { _id: ObjectId(productId) },
-        { $push: { comments: comment } }
-      );
-
-      console.log(result);
-
-      if (result.modifiedCount !== 1) {
-        console.error('Product not found or comment not added');
-        res.json({ error: 'Product not found or comment not added' });
-        return;
-      }
-
-      console.log('Comment added successfully');
-      res.json({ message: 'Comment added successfully' });
-    });
+    //   console.log('Comment added successfully');
+    //   res.json({ message: 'Comment added successfully' });
+    // });
 
 
 
@@ -228,4 +202,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Techsimple server app listening on port ${port}`);
 });
-
